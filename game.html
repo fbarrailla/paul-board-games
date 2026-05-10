@@ -27,7 +27,7 @@
   <main id="content"></main>
 
   <div class="foot">
-    Made by <span class="by">Tonton Francky</span>
+    Made by <a class="by" href="https://tontonfrancky.com" target="_blank" rel="noopener">Tonton Francky</a>
   </div>
 
 </div>
@@ -107,35 +107,50 @@ function render() {
     </section>
 
     <section class="community">
-      <div class="panel" id="rating-panel">
-        <h2>Your rating</h2>
-        <div class="avg-row">
-          <span class="avg empty" id="avg-stars">—</span>
-          <span class="count" id="avg-count">no ratings yet</span>
+      <div class="panel rating-panel" id="rating-panel">
+        <div class="panel-tape"></div>
+        <div class="avg-display" id="avg-display">
+          <div class="avg-big" id="avg-big">—</div>
+          <div class="avg-stars-mini" id="avg-mini">
+            <span class="stars-bg">★★★★★</span>
+            <span class="stars-fill" id="avg-fill" style="width: 0%">★★★★★</span>
+          </div>
+          <div class="avg-count" id="avg-count">No ratings yet — be the first!</div>
         </div>
-        <input class="name-input" id="visitor-name" type="text" placeholder="Your name" maxlength="40" autocomplete="name" />
-        <div class="star-pick" id="star-pick" role="radiogroup" aria-label="Rate this game">
+
+        <div class="rating-divider"><span>your turn</span></div>
+
+        <label class="name-row">
+          <span class="avatar" id="name-avatar" data-empty="true">?</span>
+          <input class="name-input bare" id="visitor-name" type="text" placeholder="Your name" maxlength="40" autocomplete="name" />
+        </label>
+
+        <div class="star-pick" id="star-pick" role="radiogroup" aria-label="Rate this game from 1 to 5 stars">
           <button type="button" data-value="1" aria-label="1 star">★</button>
           <button type="button" data-value="2" aria-label="2 stars">★</button>
           <button type="button" data-value="3" aria-label="3 stars">★</button>
           <button type="button" data-value="4" aria-label="4 stars">★</button>
           <button type="button" data-value="5" aria-label="5 stars">★</button>
-          <span class="label" id="star-label">Pick a name first</span>
         </div>
+        <div class="star-label" id="star-label">Pick a name first ↑</div>
         <div class="rating-status" id="rating-status"></div>
       </div>
 
-      <div class="panel" id="comments-panel">
-        <h2>What people say</h2>
+      <div class="panel comments-panel" id="comments-panel">
+        <div class="panel-tape pink"></div>
+        <div class="comments-head">
+          <h2>What people say</h2>
+          <span class="comment-count" id="comment-count">0</span>
+        </div>
         <form class="comment-form" id="comment-form">
-          <textarea id="comment-body" placeholder="Write a comment about ${game.name}…" maxlength="2000"></textarea>
+          <textarea id="comment-body" placeholder="Tell everyone what you think about ${game.name}…" maxlength="2000"></textarea>
           <div class="send-row">
             <span class="rating-status" id="comment-status"></span>
-            <button class="btn primary" type="submit" id="comment-submit">Post comment</button>
+            <button class="btn primary big" type="submit" id="comment-submit">✦ Post comment</button>
           </div>
         </form>
         <div class="comment-list" id="comment-list">
-          <div class="empty-comments"><span class="icon">💬</span>Loading comments…</div>
+          <div class="empty-comments"><span class="icon">💬</span><div>Loading…</div></div>
         </div>
       </div>
     </section>
@@ -194,24 +209,64 @@ function initRating() {
 
   function refreshAvg() {
     const avg = avgStars(currentRatings);
-    const el = $('#avg-stars');
+    const big = $('#avg-big');
+    const fill = $('#avg-fill');
     const count = $('#avg-count');
     if (avg == null) {
-      el.textContent = '—'; el.classList.add('empty');
-      count.textContent = 'no ratings yet';
+      big.textContent = '—';
+      big.dataset.empty = 'true';
+      fill.style.width = '0%';
+      count.textContent = 'No ratings yet — be the first!';
     } else {
-      el.textContent = '★ ' + avg.toFixed(1); el.classList.remove('empty');
-      count.textContent = currentRatings.length + ' rating' + (currentRatings.length === 1 ? '' : 's');
+      big.textContent = avg.toFixed(1);
+      big.dataset.empty = 'false';
+      fill.style.width = (avg / 5 * 100) + '%';
+      const n = currentRatings.length;
+      count.textContent = n + ' rating' + (n === 1 ? '' : 's');
+    }
+  }
+
+  function avatarStyleFor(name) {
+    if (!name) return { initial: '?', hue: 0 };
+    let h = 0;
+    for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) & 0x7fffffff;
+    const palette = [
+      { bg: 'var(--red)', fg: 'var(--paper)' },
+      { bg: 'var(--blue)', fg: 'var(--paper)' },
+      { bg: 'var(--yellow)', fg: 'var(--ink)' },
+      { bg: 'var(--green)', fg: 'var(--paper)' },
+      { bg: 'var(--purple)', fg: 'var(--paper)' },
+      { bg: 'var(--pink)', fg: 'var(--ink)' }
+    ];
+    const c = palette[h % palette.length];
+    return { initial: name.trim()[0].toUpperCase(), bg: c.bg, fg: c.fg };
+  }
+
+  function refreshAvatar() {
+    const av = $('#name-avatar');
+    const name = nameInput.value.trim();
+    if (!name) {
+      av.textContent = '?';
+      av.dataset.empty = 'true';
+      av.style.background = '';
+      av.style.color = '';
+    } else {
+      const s = avatarStyleFor(name);
+      av.textContent = s.initial;
+      av.dataset.empty = 'false';
+      av.style.background = s.bg;
+      av.style.color = s.fg;
     }
   }
 
   function refreshMine() {
     const name = nameInput.value.trim();
-    if (!name) { paintStars(0, 0); label.textContent = 'Pick a name first'; pendingValue = 0; return; }
+    refreshAvatar();
+    if (!name) { paintStars(0, 0); label.textContent = 'Pick a name first ↑'; pendingValue = 0; return; }
     const mine = currentRatings.find(r => r.name.toLowerCase() === name.toLowerCase());
     pendingValue = mine ? mine.stars : 0;
     paintStars(pendingValue, 0);
-    label.textContent = mine ? `Your rating: ${mine.stars}/5` : 'Click a star to rate';
+    label.textContent = mine ? `${mine.stars}/5 ★ — tap to change` : 'Tap a star to rate';
   }
 
   async function load() {
@@ -228,8 +283,10 @@ function initRating() {
     b.addEventListener('focus', () => { if (nameInput.value.trim()) paintStars(pendingValue, v); });
     b.addEventListener('click', async () => {
       const name = nameInput.value.trim();
-      if (!name) { nameInput.focus(); status.textContent = 'Add your name above first'; status.className = 'rating-status error'; return; }
+      if (!name) { nameInput.focus(); status.textContent = 'Add your name above first ↑'; status.className = 'rating-status error'; return; }
       setVisitorName(name);
+      // pop animation
+      b.classList.remove('just-picked'); void b.offsetWidth; b.classList.add('just-picked');
       try {
         status.textContent = 'Saving…'; status.className = 'rating-status';
         await upsertRating(slug, name, v);
@@ -267,20 +324,41 @@ function initComments() {
     return s.replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
   }
 
+  function colorFor(name) {
+    let h = 0;
+    for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) & 0x7fffffff;
+    const palette = [
+      { bg: 'var(--red)', fg: 'var(--paper)' },
+      { bg: 'var(--blue)', fg: 'var(--paper)' },
+      { bg: 'var(--yellow)', fg: 'var(--ink)' },
+      { bg: 'var(--green)', fg: 'var(--paper)' },
+      { bg: 'var(--purple)', fg: 'var(--paper)' },
+      { bg: 'var(--pink)', fg: 'var(--ink)' }
+    ];
+    return palette[h % palette.length];
+  }
+
   function render(comments) {
+    $('#comment-count').textContent = comments.length;
     if (!comments.length) {
-      list.innerHTML = '<div class="empty-comments"><span class="icon">💬</span>No comments yet — be the first!</div>';
+      list.innerHTML = '<div class="empty-comments"><span class="icon">💬</span><div>No comments yet — be the first!</div></div>';
       return;
     }
-    list.innerHTML = comments.map(c => `
-      <div class="comment">
-        <div class="head">
-          <span class="author">${escapeHTML(c.name)}</span>
-          <span class="when">${formatRelative(c.created_at)}</span>
+    list.innerHTML = comments.map(c => {
+      const c2 = colorFor(c.name);
+      const initial = (c.name.trim()[0] || '?').toUpperCase();
+      return `
+      <article class="comment">
+        <div class="comment-avatar" style="background: ${c2.bg}; color: ${c2.fg};">${escapeHTML(initial)}</div>
+        <div class="comment-content">
+          <div class="comment-head">
+            <span class="author">${escapeHTML(c.name)}</span>
+            <span class="when">${formatRelative(c.created_at)}</span>
+          </div>
+          <div class="body">${escapeHTML(c.body)}</div>
         </div>
-        <div class="body">${escapeHTML(c.body)}</div>
-      </div>
-    `).join('');
+      </article>`;
+    }).join('');
   }
 
   async function load() {
