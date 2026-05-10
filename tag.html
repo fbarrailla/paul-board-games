@@ -62,7 +62,7 @@
       <button class="btn" id="export-btn">⬇ Export tags</button>
       <button class="btn" id="import-btn">⬆ Import tags</button>
       <input type="file" id="import-file" accept="application/json" style="display:none" />
-      <button class="btn danger" id="reset-btn">🗑 Reset all</button>
+      <button class="btn danger" id="reset-btn">↺ Restore auto-tags</button>
     </div>
   </div>
 
@@ -236,8 +236,8 @@ function bind() {
   });
 
   $('#reset-btn').addEventListener('click', () => {
-    if (confirm('Remove ALL tags? This cannot be undone.')) {
-      saveMapping({});
+    if (confirm('Discard your changes and restore the auto-tagged defaults?')) {
+      localStorage.removeItem(MAPPING_KEY);
       refreshStats(); renderGrid(); renderSide(); renderGameList();
     }
   });
