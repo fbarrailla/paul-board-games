@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Paul's Board Games — the collection</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Fredoka:wght@400..700&family=Nunito:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="topbar">
+    <a href="index.html" class="mark">
+      <span class="die">P</span>
+      Paul's Board Games
+    </a>
+    <nav class="nav">
+      <a href="#collection">All games</a>
+      <a href="#chart">Scores</a>
+      <a href="tag.html">📷 Tag photos</a>
+      <a href="#" class="live">Playing!</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="hero-card">
+      <p class="hello">★ Hello! Welcome to ★</p>
+      <h1 class="hero-title">Paul's <span class="pop">Board Games</span></h1>
+      <p class="hero-sub">A whole shelf full of board games — rated out of twenty. Click a game to see its photo!</p>
+      <div class="hero-actions">
+        <a class="btn primary" href="#collection">See all games →</a>
+        <button class="btn ghost" id="surprise-btn">🎲 Surprise me</button>
+      </div>
+    </div>
+
+    <div class="stat-stack">
+      <div class="stat-card a">
+        <div class="icon">★</div>
+        <div>
+          <div class="big" id="stat-count">140</div>
+          <div class="lbl">games on the shelf</div>
+        </div>
+      </div>
+      <div class="stat-card b">
+        <div class="icon">📷</div>
+        <div>
+          <div class="big" id="stat-photos">0<span class="small">/165</span></div>
+          <div class="lbl">photos tagged</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="shelf">
+    <div class="shelf-head">
+      <h2>Paul's favourites</h2>
+      <span class="pill">★ 20 / 20 ★</span>
+    </div>
+    <div class="trophies" id="trophies"></div>
+  </section>
+
+  <section id="collection" class="filter-strip">
+    <div class="field-search">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <input id="search" type="search" placeholder="Find a game…" autocomplete="off" />
+    </div>
+    <div>
+      <span class="field-label">Score</span>
+      <div class="chips" id="tier-chips" style="display:inline-flex">
+        <button class="chip" aria-pressed="false" data-tier="excellent">Awesome (18+)</button>
+        <button class="chip" aria-pressed="false" data-tier="great">Great (16-17)</button>
+        <button class="chip" aria-pressed="false" data-tier="good">Good (14-15)</button>
+        <button class="chip" aria-pressed="false" data-tier="okay">Okay</button>
+      </div>
+    </div>
+    <div>
+      <span class="field-label">Players</span>
+      <div class="chips" id="player-chips" style="display:inline-flex">
+        <button class="chip" aria-pressed="false" data-players="3j+">3 or more</button>
+        <button class="chip" aria-pressed="false" data-players="duo">2 player</button>
+        <button class="chip" aria-pressed="false" data-players="hasphoto">Has photo</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="ribbon">
+    <span class="count"><em id="visible-count">140</em> / <span id="total-count">140</span> games</span>
+    <div class="sort">
+      <span class="field-label">Sort</span>
+      <select id="sort">
+        <option value="rating-desc">Best first</option>
+        <option value="rating-asc">Worst first</option>
+        <option value="alpha">A → Z</option>
+        <option value="random">Shuffle</option>
+      </select>
+    </div>
+  </div>
+
+  <div id="grid" class="sticker-grid"></div>
+
+  <section id="chart" class="chart-section">
+    <div>
+      <h2>The score chart</h2>
+      <p>Most games land in the <strong>15–17</strong> sweet spot. Only three got the perfect <strong>20/20</strong>!</p>
+    </div>
+    <div class="bars" id="bars"></div>
+  </section>
+
+  <div class="foot">
+    Made by <span class="by">Paul ✦ 2026</span>
+  </div>
+
+</div>
+
+<script src="data.js"></script>
+<script>
+const $ = (s, r) => (r || document).querySelector(s);
+const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+const state = { q: '', tiers: new Set(), players: null, sort: 'rating-desc' };
+
+function computeStats() {
+  $('#stat-count').textContent = GAMES.length;
+  $('#stat-photos').innerHTML = taggedCount() + '<span class="small">/' + IMAGES.length + '</span>';
+}
+
+function renderTrophies() {
+  const gems = GAMES.filter(g => g.rating === 20);
+  $('#trophies').innerHTML = gems.map(g => {
+    const slug = slugify(g.name);
+    const photos = imagesForGame(slug);
+    const photoTag = photos.length ? `<img class="trophy-photo" src="images/thumb/${photos[0]}" alt="${g.name}" loading="lazy"/>` : '';
+    return `<a class="trophy" href="game.html?slug=${slug}">
+      <div class="medal">20</div>
+      <div class="stars">★★★★★</div>
+      <h3>${g.name}</h3>
+      ${photoTag}
+      <div class="tag-row"><span class="tag gold">★ PERFECT</span></div>
+    </a>`;
+  }).join('');
+}
+
+function renderChart() {
+  const counts = {};
+  for (let i = 8; i <= 20; i++) counts[i] = 0;
+  GAMES.forEach(g => { if (g.rating != null && counts[g.rating] != null) counts[g.rating]++; });
+  const max = Math.max(...Object.values(counts));
+  const peak = +Object.entries(counts).reduce((a,b) => b[1] > a[1] ? b : a)[0];
+  $('#bars').innerHTML = Object.entries(counts).map(([k, v], i) => {
+    const h = max ? (v / max * 100) : 0;
+    const isPeak = +k === peak;
+    const cls = v === 0 ? 'zero' : (isPeak ? 'peak' : '');
+    return `<div class="bar ${cls}" style="height:${h || 3}%; --i:${i};" title="${k}/20 — ${v} game${v>1?'s':''}">
+      <span class="bar-count">${v}</span>
+      <span class="bar-label">${k}</span>
+    </div>`;
+  }).join('');
+}
+
+function visibleList() {
+  const q = norm(state.q.trim());
+  return GAMES.filter(g => {
+    if (q && !norm(g.name).includes(q)) return false;
+    if (state.tiers.size > 0 && !state.tiers.has(tierOf(g.rating))) return false;
+    if (state.players === '3j+' && !is3plus(g)) return false;
+    if (state.players === 'duo' && !isDuo(g)) return false;
+    if (state.players === 'hasphoto' && imagesForGame(slugify(g.name)).length === 0) return false;
+    return true;
+  });
+}
+
+function sortGames(list) {
+  const arr = [...list];
+  switch (state.sort) {
+    case 'rating-desc': arr.sort((a,b) => (b.rating ?? -1) - (a.rating ?? -1) || a.name.localeCompare(b.name, 'fr')); break;
+    case 'rating-asc': arr.sort((a,b) => (a.rating ?? 99) - (b.rating ?? 99) || a.name.localeCompare(b.name, 'fr')); break;
+    case 'alpha': arr.sort((a,b) => a.name.localeCompare(b.name, 'fr')); break;
+    case 'random':
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i+1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      break;
+  }
+  return arr;
+}
+
+function renderGrid() {
+  const list = sortGames(visibleList());
+  const grid = $('#grid');
+  if (!list.length) {
+    grid.innerHTML = '<div class="empty-state">Hmm, no games match!<span>Try removing a filter</span></div>';
+  } else {
+    grid.innerHTML = list.map((g, i) => {
+      const tier = tierOf(g.rating);
+      const slug = slugify(g.name);
+      const photos = imagesForGame(slug);
+      const photo = photos.length
+        ? `<img class="photo" src="images/thumb/${photos[0]}" alt="${g.name}" loading="lazy" />`
+        : `<div class="photo-placeholder">${g.name.charAt(0).toUpperCase()}</div>`;
+      const score = g.rating == null ? '—' : `${g.rating}<span class="denom">/20</span>`;
+      const tags = [];
+      if (g.rating === 20) tags.push('<span class="tag gold">★ PERFECT</span>');
+      if (g.remarks && /3j|4j/i.test(g.remarks)) tags.push(`<span class="tag players">${g.remarks.toUpperCase()}</span>`);
+      if (isDuo(g)) tags.push('<span class="tag duo">2-PLAYER</span>');
+      if (photos.length > 1) tags.push(`<span class="tag photo-count">📷 ${photos.length}</span>`);
+      return `<a class="game" data-tier="${tier}" href="game.html?slug=${slug}" style="animation: barIn .35s cubic-bezier(.34,1.56,.64,1) ${Math.min(i*15, 700)}ms backwards;">
+        ${photo}
+        <div class="body">
+          <div class="name">${g.name}</div>
+          <div class="score-row">
+            <span class="score">${score}</span>
+            <span class="stars">${stars(g.rating)}</span>
+          </div>
+          ${tags.length ? `<div class="tags">${tags.join('')}</div>` : ''}
+        </div>
+      </a>`;
+    }).join('');
+  }
+  $('#visible-count').textContent = list.length;
+  $('#total-count').textContent = GAMES.length;
+}
+
+function bind() {
+  let t;
+  $('#search').addEventListener('input', e => {
+    clearTimeout(t);
+    t = setTimeout(() => { state.q = e.target.value; renderGrid(); }, 120);
+  });
+  $$('#tier-chips .chip').forEach(b => b.addEventListener('click', () => {
+    const tier = b.dataset.tier;
+    if (state.tiers.has(tier)) state.tiers.delete(tier); else state.tiers.add(tier);
+    b.setAttribute('aria-pressed', state.tiers.has(tier));
+    renderGrid();
+  }));
+  $$('#player-chips .chip').forEach(b => b.addEventListener('click', () => {
+    const v = b.dataset.players;
+    state.players = state.players === v ? null : v;
+    $$('#player-chips .chip').forEach(x => x.setAttribute('aria-pressed', x.dataset.players === state.players));
+    renderGrid();
+  }));
+  $('#sort').addEventListener('change', e => { state.sort = e.target.value; renderGrid(); });
+  $('#surprise-btn').addEventListener('click', () => {
+    const rated = GAMES.filter(g => g.rating != null);
+    const pick = rated[Math.floor(Math.random() * rated.length)];
+    location.href = 'game.html?slug=' + slugify(pick.name);
+  });
+
+  const counter = $('#stat-count');
+  const target = parseInt(counter.textContent, 10);
+  const t0 = performance.now();
+  const dur = 900;
+  (function tick(now) {
+    const p = Math.min(1, (now - t0) / dur);
+    const eased = 1 - Math.pow(1 - p, 4);
+    counter.textContent = Math.round(target * eased);
+    if (p < 1) requestAnimationFrame(tick); else counter.textContent = target;
+  })(performance.now());
+}
+
+computeStats();
+renderTrophies();
+renderChart();
+renderGrid();
+bind();
+</script>
+</body>
+</html>

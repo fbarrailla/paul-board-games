@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title id="page-title">Paul's Board Games</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Fredoka:wght@400..700&family=Nunito:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="topbar">
+    <a href="index.html" class="mark">
+      <span class="die">P</span>
+      Paul's Board Games
+    </a>
+    <nav class="nav">
+      <a href="index.html">All games</a>
+      <a href="tag.html">📷 Tag photos</a>
+    </nav>
+  </header>
+
+  <main id="content"></main>
+
+  <div class="foot">
+    Made by <span class="by">Paul ✦ 2026</span>
+  </div>
+
+</div>
+
+<script src="data.js"></script>
+<script>
+const $ = (s, r) => (r || document).querySelector(s);
+const params = new URLSearchParams(location.search);
+const slug = params.get('slug');
+const game = slug ? findGameBySlug(slug) : null;
+const content = $('#content');
+
+function render() {
+  if (!game) {
+    content.innerHTML = `
+      <section class="detail">
+        <div class="detail-photos empty-pane">
+          <div class="icon">🎲</div>
+          <h3>Game not found</h3>
+          <p>That game isn't in the shelf.</p>
+          <a class="btn primary" href="index.html">← Back to all games</a>
+        </div>
+      </section>`;
+    return;
+  }
+
+  document.getElementById('page-title').textContent = game.name + " — Paul's Board Games";
+  const tier = tierOf(game.rating);
+  const photos = imagesForGame(slug);
+  const tags = [];
+  if (game.rating === 20) tags.push('<span class="tag gold">★ PERFECT SCORE</span>');
+  if (game.remarks && /3j|4j/i.test(game.remarks)) tags.push(`<span class="tag players">${game.remarks.toUpperCase()}</span>`);
+  if (isDuo(game)) tags.push('<span class="tag duo">2-PLAYER</span>');
+  if (game.remarks && !/3j|4j/i.test(game.remarks)) tags.push(`<span class="tag">${game.remarks}</span>`);
+
+  const scoreHTML = game.rating == null
+    ? `<span class="big-score" style="color:var(--ink-3)">—</span>`
+    : `<span class="big-score">${game.rating}</span><span class="denom">/20</span>`;
+
+  const photoSection = photos.length
+    ? `<div class="detail-photos">
+        ${photos.map(f => `
+          <figure class="detail-photo">
+            <span class="pin"></span>
+            <img src="images/full/${f}" alt="${game.name}" loading="lazy" />
+          </figure>
+        `).join('')}
+      </div>`
+    : `<div class="detail-photos empty-pane">
+        <div class="icon">📷</div>
+        <h3>No photo yet!</h3>
+        <p>Tag a photo for ${game.name} in the photo studio.</p>
+        <a class="btn primary" href="tag.html?game=${slug}">Go tag a photo →</a>
+      </div>`;
+
+  // Suggest a couple of related games (same tier, not this one)
+  const related = GAMES.filter(g => tierOf(g.rating) === tier && g.name !== game.name)
+    .sort(() => Math.random() - 0.5)
+    .slice(0, 4);
+
+  content.innerHTML = `
+    <section class="detail">
+      ${photoSection}
+      <aside class="detail-info">
+        <div class="kicker">Game ${GAMES.indexOf(game) + 1} of ${GAMES.length}</div>
+        <h1>${game.name}</h1>
+        <div class="detail-score">${scoreHTML}</div>
+        <div class="big-stars">${stars(game.rating)}</div>
+        ${tags.length ? `<div class="tag-row">${tags.join('')}</div>` : ''}
+        <div class="actions">
+          <a class="btn" href="index.html">← All games</a>
+          <a class="btn primary" href="tag.html?game=${slug}">📷 ${photos.length ? 'Manage photos' : 'Add photo'}</a>
+        </div>
+      </aside>
+    </section>
+
+    ${related.length ? `
+    <section class="shelf">
+      <div class="shelf-head"><h2>You might also like…</h2></div>
+      <div class="sticker-grid">
+        ${related.map(g => {
+          const t = tierOf(g.rating);
+          const p = imagesForGame(slugify(g.name));
+          const photo = p.length
+            ? `<img class="photo" src="images/thumb/${p[0]}" alt="${g.name}" loading="lazy" />`
+            : `<div class="photo-placeholder">${g.name.charAt(0).toUpperCase()}</div>`;
+          return `<a class="game" data-tier="${t}" href="game.html?slug=${slugify(g.name)}">
+            ${photo}
+            <div class="body">
+              <div class="name">${g.name}</div>
+              <div class="score-row">
+                <span class="score">${g.rating}<span class="denom">/20</span></span>
+                <span class="stars">${stars(g.rating)}</span>
+              </div>
+            </div>
+          </a>`;
+        }).join('')}
+      </div>
+    </section>` : ''}
+  `;
+}
+
+render();
+</script>
+</body>
+</html>

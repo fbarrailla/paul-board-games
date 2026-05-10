@@ -1,0 +1,55 @@
+// Auto-generated. 140 games, 165 images.
+const GAMES = [{"name": "A la lettre!", "rating": 18}, {"name": "Astérix", "rating": 15}, {"name": "Astérix les défis", "rating": 15}, {"name": "Azul", "rating": 18}, {"name": "Alice de l'autre côté du miroir", "rating": 18}, {"name": "Avant/Après", "rating": 15}, {"name": "Affabul", "rating": 16, "remarks": "riches"}, {"name": "One Round?", "rating": 17}, {"name": "Onitama", "rating": 17}, {"name": "Origami", "rating": 12}, {"name": "Ominoes", "rating": 17}, {"name": "Onix", "rating": 17}, {"name": "One Piece Nakama", "rating": 17}, {"name": "Red 7", "rating": 14}, {"name": "Red Panda", "rating": 15}, {"name": "Renard des bois duo", "rating": 16}, {"name": "Révolution", "rating": 14, "remarks": "3j+"}, {"name": "Rolling Realms", "rating": 17}, {"name": "Rugby 15", "rating": 13}, {"name": "Rummikub", "rating": 20}, {"name": "Romi Rami", "rating": 17}, {"name": "Ricochets", "rating": 19}, {"name": "Papayoo", "rating": 12, "remarks": "3j+"}, {"name": "Patchwork", "rating": 15}, {"name": "Perfect Word", "rating": 15}, {"name": "Perudo", "rating": 12, "remarks": "3j+"}, {"name": "Pikomino", "rating": 16}, {"name": "Pickomino", "rating": 16, "remarks": "3j+"}, {"name": "Paw!", "rating": 15}, {"name": "Push", "rating": 16}, {"name": "Pina Pirata", "rating": 14}, {"name": "Pyradak", "rating": 19}, {"name": "Palm Island", "rating": 16}, {"name": "Nagaraja", "rating": 17}, {"name": "Next!", "rating": 16}, {"name": "Jaipur", "rating": 17}, {"name": "Jamaica", "rating": 14}, {"name": "Jeu des cochons", "rating": 13}, {"name": "King of Gold", "rating": 15}, {"name": "Kingdomino", "rating": 19}, {"name": "Kingdomino Duel", "rating": 15}, {"name": "Kodachi", "rating": 16}, {"name": "Kompromat", "rating": 18}, {"name": "Flamme Rouge", "rating": 12}, {"name": "Fogwarts", "rating": 17}, {"name": "Gift Trap", "rating": 16, "remarks": "3j+"}, {"name": "Grâce", "rating": 16}, {"name": "Hanabi", "rating": 17}, {"name": "Harry Potter: Défense contre les forces du mal", "rating": 16}, {"name": "Harry Potter: Hogwarts Battle", "rating": 18}, {"name": "Harvest Dice", "rating": 15}, {"name": "Hygge", "rating": 15}, {"name": "Harmonies", "rating": 17}, {"name": "Imagine", "rating": 16, "remarks": "3j+"}, {"name": "Îles & Oasis", "rating": 15}, {"name": "Isle of Skye", "rating": 16}, {"name": "Ile Noa", "rating": 17}, {"name": "La Vegas", "rating": 16}, {"name": "Littoral", "rating": 18}, {"name": "Lobo 77", "rating": 17}, {"name": "La Relotte", "rating": 16}, {"name": "Lucky Numbers", "rating": 18}, {"name": "La course à la visite", "rating": 16}, {"name": "Mille bornes", "rating": 14}, {"name": "Maui/Tahit", "rating": 16, "remarks": "3j+"}, {"name": "Memozz", "rating": 13}, {"name": "Mille Sabords!", "rating": 13}, {"name": "Moby", "rating": 16}, {"name": "Mogo", "rating": 16}, {"name": "Mot malin", "rating": 16}, {"name": "Mr Jack Pocket", "rating": 16}, {"name": "Mystero", "rating": null, "remarks": "3j+"}, {"name": "Mysterium Park", "rating": 13}, {"name": "Le Marche du Crabe", "rating": 15}, {"name": "Tout malin", "rating": 18}, {"name": "Miyabi/Hellapagos", "rating": 16}, {"name": "Salade Points", "rating": 15}, {"name": "Sequence", "rating": 17}, {"name": "Shatten Totten", "rating": 17}, {"name": "Seven Wonders Architects", "rating": 17}, {"name": "Sides", "rating": 17}, {"name": "Six qui prend", "rating": 17}, {"name": "Silver & Gold", "rating": 16}, {"name": "Similo", "rating": 14}, {"name": "Skyjo", "rating": 15}, {"name": "Sotancore", "rating": 15}, {"name": "Splendor Duel", "rating": 15}, {"name": "Super Mega Lucky Box", "rating": 16}, {"name": "Sushi Roll", "rating": 16}, {"name": "Sky Team", "rating": 15}, {"name": "Suspect", "rating": 17}, {"name": "Welcome to the World", "rating": 20, "remarks": "3j+"}, {"name": "Welcome", "rating": 17}, {"name": "Wazabi", "rating": 17}, {"name": "Explorers", "rating": 19, "remarks": "4j+"}, {"name": "Exploding Kittens", "rating": 13}, {"name": "Daydream", "rating": 17}, {"name": "Dixit", "rating": 17}, {"name": "Donut Donut", "rating": 17}, {"name": "Double Seven", "rating": 18}, {"name": "Draw Hotel", "rating": 15}, {"name": "Dream Home", "rating": 14}, {"name": "Deutch", "rating": 18}, {"name": "Dominion", "rating": 17}, {"name": "Targets", "rating": 8}, {"name": "Tea for 2", "rating": 14}, {"name": "The Crew", "rating": 16, "remarks": "3j+"}, {"name": "The Mind", "rating": 15}, {"name": "Timeline", "rating": 14}, {"name": "Totem!", "rating": 13}, {"name": "Treize Couronnes", "rating": 17}, {"name": "Treize Ghosts", "rating": 14}, {"name": "Take 12", "rating": 18}, {"name": "Trésor de Maman", "rating": 13}, {"name": "Trio", "rating": 16, "remarks": "3j+"}, {"name": "Triomino", "rating": 16}, {"name": "TMC", "rating": 15}, {"name": "Turtle Music", "rating": 17}, {"name": "Bang! Duel", "rating": 15}, {"name": "Beewizz", "rating": 14}, {"name": "Bluffane", "rating": 16}, {"name": "Bonjour Robert", "rating": 15}, {"name": "Boomy Europe", "rating": 16}, {"name": "Bravest", "rating": 12}, {"name": "Bataille des Patissiers", "rating": 16}, {"name": "Brilliant", "rating": 17}, {"name": "Captain Carcasse", "rating": 15}, {"name": "Canal Rush", "rating": 15}, {"name": "Cat Lady", "rating": 13}, {"name": "Check List", "rating": 16}, {"name": "Code Names", "rating": 16}, {"name": "Code Names Duo", "rating": 16}, {"name": "C'est un? le mot", "rating": 16}, {"name": "Enquête Mission", "rating": 17}, {"name": "Clacette", "rating": 14}, {"name": "Comment j'ai adopté un gnou", "rating": 10}, {"name": "Corinth", "rating": 20}, {"name": "Crack List", "rating": 16}, {"name": "Catmandou", "rating": 17}, {"name": "6 voleurs de légendes", "rating": 16}];
+const IMAGES = ["IMG_0014.jpg", "IMG_0036.jpg", "IMG_0282.jpg", "IMG_0283.jpg", "IMG_0284.jpg", "IMG_0471.jpg", "IMG_0833.jpg", "IMG_0835.jpg", "IMG_0838.jpg", "IMG_0843.jpg", "IMG_0851.jpg", "IMG_0855.jpg", "IMG_0876.jpg", "IMG_0877.jpg", "IMG_0903.jpg", "IMG_0943.jpg", "IMG_0946.jpg", "IMG_0948.jpg", "IMG_0962.jpg", "IMG_0980.jpg", "IMG_0983.jpg", "IMG_0987.jpg", "IMG_1011.jpg", "IMG_1044.jpg", "IMG_1053.jpg", "IMG_1076.jpg", "IMG_1091.jpg", "IMG_1092.jpg", "IMG_1105.jpg", "IMG_1116.jpg", "IMG_1118.jpg", "IMG_1124.jpg", "IMG_1138.jpg", "IMG_1168.jpg", "IMG_1169.jpg", "IMG_1173.jpg", "IMG_1188.jpg", "IMG_1215.jpg", "IMG_1216.jpg", "IMG_1247.jpg", "IMG_1248.jpg", "IMG_1317.jpg", "IMG_1320.jpg", "IMG_1406.jpg", "IMG_1407.jpg", "IMG_1428.jpg", "IMG_1794.jpg", "IMG_1795.jpg", "IMG_1800.jpg", "IMG_1849.jpg", "IMG_2656.jpg", "IMG_2657.jpg", "IMG_2689.jpg", "IMG_2733.jpg", "IMG_2751.jpg", "IMG_2798.jpg", "IMG_2923.jpg", "IMG_3085.jpg", "IMG_3097.jpg", "IMG_3102.jpg", "IMG_3215.jpg", "IMG_3238.jpg", "IMG_3338.jpg", "IMG_3549.jpg", "IMG_3578.jpg", "IMG_3581.jpg", "IMG_3582.jpg", "IMG_3709.jpg", "IMG_3710.jpg", "IMG_3711.jpg", "IMG_3745.jpg", "IMG_3828.jpg", "IMG_3829.jpg", "IMG_3846.jpg", "IMG_3913.jpg", "IMG_3971.jpg", "IMG_4064.jpg", "IMG_4069.jpg", "IMG_4099.jpg", "IMG_4158.jpg", "IMG_4171.jpg", "IMG_4172.jpg", "IMG_4173.jpg", "IMG_4174.jpg", "IMG_4204.jpg", "IMG_4237.jpg", "IMG_4238.jpg", "IMG_4271.jpg", "IMG_4280.jpg", "IMG_4423.jpg", "IMG_4476.jpg", "IMG_4478.jpg", "IMG_4573.jpg", "IMG_4771.jpg", "IMG_4889.jpg", "IMG_4939.jpg", "IMG_4945.jpg", "IMG_5011.jpg", "IMG_5012.jpg", "IMG_5174.jpg", "IMG_5198.jpg", "IMG_5265.jpg", "IMG_5410.jpg", "IMG_5748.jpg", "IMG_5908.jpg", "IMG_6384.jpg", "IMG_6499.jpg", "IMG_6500.jpg", "IMG_6749.jpg", "IMG_6771.jpg", "IMG_6864.jpg", "IMG_6937.jpg", "IMG_7025.jpg", "IMG_7044.jpg", "IMG_7052.jpg", "IMG_7171.jpg", "IMG_7381.jpg", "IMG_7502.jpg", "IMG_7503.jpg", "IMG_7565.jpg", "IMG_7566.jpg", "IMG_7888.jpg", "IMG_7942.jpg", "IMG_8065.jpg", "IMG_8084.jpg", "IMG_8104.jpg", "IMG_8105.jpg", "IMG_8141.jpg", "IMG_8155.jpg", "IMG_8159.jpg", "IMG_8282.jpg", "IMG_8427.jpg", "IMG_8624.jpg", "IMG_8625.jpg", "IMG_8694.jpg", "IMG_8695.jpg", "IMG_8834.jpg", "IMG_8835.jpg", "IMG_8837.jpg", "IMG_8887.jpg", "IMG_8931.jpg", "IMG_8932.jpg", "IMG_8994.jpg", "IMG_8995.jpg", "IMG_9013.jpg", "IMG_9014.jpg", "IMG_9052.jpg", "IMG_9116.jpg", "IMG_9132.jpg", "IMG_9133.jpg", "IMG_9358.jpg", "IMG_9362.jpg", "IMG_9363.jpg", "IMG_9365.jpg", "IMG_9435.jpg", "IMG_9439.jpg", "IMG_9440.jpg", "IMG_9442.jpg", "IMG_9443.jpg", "IMG_9466.jpg", "IMG_9471.jpg", "IMG_9480.jpg", "IMG_9520.jpg", "IMG_9583.jpg", "IMG_9903.jpg"];
+
+function slugify(s) {
+  return s.toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu, '')
+    .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+function tierOf(r) {
+  if (r == null) return 'unrated';
+  if (r >= 18) return 'excellent';
+  if (r >= 16) return 'great';
+  if (r >= 14) return 'good';
+  if (r >= 12) return 'okay';
+  return 'meh';
+}
+function isDuo(g) { return /duel|duo|tea for 2|onitama|kodachi/i.test(g.name); }
+function is3plus(g) { return g.remarks && /3j|4j/i.test(g.remarks); }
+function stars(r) {
+  if (r == null) return '<span class="empty">★★★★★</span>';
+  const n = Math.round(r / 4);
+  return '★'.repeat(n) + '<span class="empty">' + '★'.repeat(5 - n) + '</span>';
+}
+function norm(s) { return s.toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu, ''); }
+
+const MAPPING_KEY = 'paulsBoardGames.mapping.v1';
+function loadMapping() {
+  try { return JSON.parse(localStorage.getItem(MAPPING_KEY) || '{}'); } catch (e) { return {}; }
+}
+function saveMapping(m) { localStorage.setItem(MAPPING_KEY, JSON.stringify(m)); }
+function imagesForGame(slug) { const m = loadMapping(); return m[slug] || []; }
+function gameForImage(filename) {
+  const m = loadMapping();
+  for (const [slug, list] of Object.entries(m)) if (list.includes(filename)) return slug;
+  return null;
+}
+function setImageGame(filename, slug) {
+  const m = loadMapping();
+  for (const k of Object.keys(m)) {
+    m[k] = (m[k] || []).filter(f => f !== filename);
+    if (m[k].length === 0) delete m[k];
+  }
+  if (slug) {
+    if (!m[slug]) m[slug] = [];
+    if (!m[slug].includes(filename)) m[slug].push(filename);
+  }
+  saveMapping(m);
+}
+function findGameBySlug(slug) { return GAMES.find(function(g){ return slugify(g.name) === slug; }); }
+function taggedCount() {
+  const m = loadMapping();
+  let n = 0;
+  for (const k of Object.keys(m)) n += (m[k] || []).length;
+  return n;
+}
