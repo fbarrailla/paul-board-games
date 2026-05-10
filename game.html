@@ -32,7 +32,9 @@
 
 </div>
 
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script src="data.js"></script>
+<script src="supa.js"></script>
 <script>
 const $ = (s, r) => (r || document).querySelector(s);
 const params = new URLSearchParams(location.search);
@@ -104,6 +106,40 @@ function render() {
       </aside>
     </section>
 
+    <section class="community">
+      <div class="panel" id="rating-panel">
+        <h2>Your rating</h2>
+        <div class="avg-row">
+          <span class="avg empty" id="avg-stars">—</span>
+          <span class="count" id="avg-count">no ratings yet</span>
+        </div>
+        <input class="name-input" id="visitor-name" type="text" placeholder="Your name" maxlength="40" autocomplete="name" />
+        <div class="star-pick" id="star-pick" role="radiogroup" aria-label="Rate this game">
+          <button type="button" data-value="1" aria-label="1 star">★</button>
+          <button type="button" data-value="2" aria-label="2 stars">★</button>
+          <button type="button" data-value="3" aria-label="3 stars">★</button>
+          <button type="button" data-value="4" aria-label="4 stars">★</button>
+          <button type="button" data-value="5" aria-label="5 stars">★</button>
+          <span class="label" id="star-label">Pick a name first</span>
+        </div>
+        <div class="rating-status" id="rating-status"></div>
+      </div>
+
+      <div class="panel" id="comments-panel">
+        <h2>What people say</h2>
+        <form class="comment-form" id="comment-form">
+          <textarea id="comment-body" placeholder="Write a comment about ${game.name}…" maxlength="2000"></textarea>
+          <div class="send-row">
+            <span class="rating-status" id="comment-status"></span>
+            <button class="btn primary" type="submit" id="comment-submit">Post comment</button>
+          </div>
+        </form>
+        <div class="comment-list" id="comment-list">
+          <div class="empty-comments"><span class="icon">💬</span>Loading comments…</div>
+        </div>
+      </div>
+    </section>
+
     ${related.length ? `
     <section class="shelf">
       <div class="shelf-head"><h2>You might also like…</h2></div>
@@ -131,6 +167,156 @@ function render() {
 }
 
 render();
+
+// — Community: ratings + comments —
+if (game) {
+  initRating();
+  initComments();
+}
+
+function initRating() {
+  const nameInput = $('#visitor-name');
+  const status = $('#rating-status');
+  const label = $('#star-label');
+  const starBtns = Array.from(document.querySelectorAll('#star-pick button'));
+  let currentRatings = [];
+  let pendingValue = 0;
+
+  nameInput.value = getVisitorName();
+
+  function paintStars(active, preview) {
+    starBtns.forEach((b, i) => {
+      const v = i + 1;
+      b.dataset.active = (v <= active) ? 'true' : 'false';
+      b.classList.toggle('preview', preview > 0 && v <= preview && v > active);
+    });
+  }
+
+  function refreshAvg() {
+    const avg = avgStars(currentRatings);
+    const el = $('#avg-stars');
+    const count = $('#avg-count');
+    if (avg == null) {
+      el.textContent = '—'; el.classList.add('empty');
+      count.textContent = 'no ratings yet';
+    } else {
+      el.textContent = '★ ' + avg.toFixed(1); el.classList.remove('empty');
+      count.textContent = currentRatings.length + ' rating' + (currentRatings.length === 1 ? '' : 's');
+    }
+  }
+
+  function refreshMine() {
+    const name = nameInput.value.trim();
+    if (!name) { paintStars(0, 0); label.textContent = 'Pick a name first'; pendingValue = 0; return; }
+    const mine = currentRatings.find(r => r.name.toLowerCase() === name.toLowerCase());
+    pendingValue = mine ? mine.stars : 0;
+    paintStars(pendingValue, 0);
+    label.textContent = mine ? `Your rating: ${mine.stars}/5` : 'Click a star to rate';
+  }
+
+  async function load() {
+    try {
+      currentRatings = await fetchRatings(slug);
+      refreshAvg();
+      refreshMine();
+    } catch (e) { status.textContent = 'Could not load ratings'; status.className = 'rating-status error'; }
+  }
+
+  starBtns.forEach((b, i) => {
+    const v = i + 1;
+    b.addEventListener('mouseenter', () => { if (nameInput.value.trim()) paintStars(pendingValue, v); });
+    b.addEventListener('focus', () => { if (nameInput.value.trim()) paintStars(pendingValue, v); });
+    b.addEventListener('click', async () => {
+      const name = nameInput.value.trim();
+      if (!name) { nameInput.focus(); status.textContent = 'Add your name above first'; status.className = 'rating-status error'; return; }
+      setVisitorName(name);
+      try {
+        status.textContent = 'Saving…'; status.className = 'rating-status';
+        await upsertRating(slug, name, v);
+        pendingValue = v;
+        // Update locally without refetch
+        const idx = currentRatings.findIndex(r => r.name.toLowerCase() === name.toLowerCase());
+        if (idx >= 0) currentRatings[idx].stars = v;
+        else currentRatings.push({ name, stars: v });
+        refreshAvg();
+        paintStars(v, 0);
+        label.textContent = `Your rating: ${v}/5`;
+        status.textContent = '★ Saved!'; status.className = 'rating-status success';
+        setTimeout(() => { status.textContent = ''; status.className = 'rating-status'; }, 2000);
+      } catch (e) {
+        status.textContent = e.message && /relation .* does not exist/i.test(e.message) ? 'Database not set up yet (run the migration).' : 'Save failed: ' + (e.message || 'unknown');
+        status.className = 'rating-status error';
+      }
+    });
+  });
+  $('#star-pick').addEventListener('mouseleave', () => paintStars(pendingValue, 0));
+
+  nameInput.addEventListener('input', () => { setVisitorName(nameInput.value); refreshMine(); });
+
+  load();
+}
+
+function initComments() {
+  const list = $('#comment-list');
+  const form = $('#comment-form');
+  const body = $('#comment-body');
+  const submit = $('#comment-submit');
+  const status = $('#comment-status');
+
+  function escapeHTML(s) {
+    return s.replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+  }
+
+  function render(comments) {
+    if (!comments.length) {
+      list.innerHTML = '<div class="empty-comments"><span class="icon">💬</span>No comments yet — be the first!</div>';
+      return;
+    }
+    list.innerHTML = comments.map(c => `
+      <div class="comment">
+        <div class="head">
+          <span class="author">${escapeHTML(c.name)}</span>
+          <span class="when">${formatRelative(c.created_at)}</span>
+        </div>
+        <div class="body">${escapeHTML(c.body)}</div>
+      </div>
+    `).join('');
+  }
+
+  async function load() {
+    try {
+      const data = await fetchComments(slug);
+      render(data);
+    } catch (e) {
+      list.innerHTML = '<div class="empty-comments">Could not load comments.</div>';
+    }
+  }
+
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const name = ($('#visitor-name').value || '').trim();
+    const text = body.value.trim();
+    if (!name) { status.textContent = 'Pick a name above first'; status.className = 'rating-status error'; return; }
+    if (!text) { status.textContent = 'Write something to post'; status.className = 'rating-status error'; return; }
+    setVisitorName(name);
+    submit.disabled = true; status.textContent = 'Posting…'; status.className = 'rating-status';
+    try {
+      const created = await addComment(slug, name, text);
+      body.value = '';
+      status.textContent = '✓ Posted!'; status.className = 'rating-status success';
+      const fresh = await fetchComments(slug);
+      render(fresh);
+      setTimeout(() => { status.textContent = ''; status.className = 'rating-status'; }, 2000);
+    } catch (err) {
+      status.textContent = err.message && /relation .* does not exist/i.test(err.message) ? 'Database not set up yet (run the migration).' : 'Failed: ' + (err.message || 'unknown');
+      status.className = 'rating-status error';
+    } finally {
+      submit.disabled = false;
+    }
+  });
+
+  load();
+}
 </script>
 </body>
 </html>
