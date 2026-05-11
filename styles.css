@@ -694,3 +694,34 @@ a.foot-by:hover, .foot a.by:hover { transform: rotate(2deg) translate(-1px,-1px)
   border-left-color: var(--ink-3);
   border-left-style: dashed;
 }
+
+/* HERO PORTRAIT */
+.hero-card.hero-card--portrait {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(220px, 0.95fr);
+  gap: clamp(1rem, 2.5vw, 1.8rem);
+  align-items: center;
+}
+.hero-card.hero-card--portrait::after { display: none; }
+.hero-portrait {
+  margin: 0;
+  border: 3px solid var(--ink);
+  border-radius: 20px;
+  box-shadow: 6px 6px 0 var(--ink);
+  background: var(--paper);
+  overflow: hidden;
+  transform: rotate(1.5deg);
+  transition: transform .35s cubic-bezier(.34,1.56,.64,1);
+}
+.hero-card.hero-card--portrait:hover .hero-portrait { transform: rotate(-1deg) translateY(-2px); }
+.hero-portrait img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1200 / 637;
+  object-fit: cover;
+}
+@media (max-width: 720px) {
+  .hero-card.hero-card--portrait { grid-template-columns: 1fr; }
+  .hero-portrait { transform: rotate(-1.2deg); max-width: 360px; margin: 0 auto; }
+}
