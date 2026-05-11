@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html>
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -16,31 +16,42 @@
   <header class="topbar">
     <a href="index.html" class="mark">
       <span class="die">P</span>
-      Paul's Board Games
+      <span data-i18n="brand">Paul's Board Games</span>
     </a>
     <nav class="nav">
-      <a href="index.html">All games</a>
-      <a href="tag.html">📷 Tag photos</a>
+      <a href="index.html" data-i18n="nav.all_games">All games</a>
+      <a href="tag.html" data-i18n="nav.tag_photos">📷 Tag photos</a>
+      <button class="lang-toggle" id="lang-toggle" type="button" aria-label="Change language">
+        <span class="lang-pill" data-lang="fr">FR</span>
+        <span class="lang-pill" data-lang="en">EN</span>
+      </button>
     </nav>
   </header>
 
   <main id="content"></main>
 
   <div class="foot">
-    Made by <a class="by" href="https://tontonfrancky.com" target="_blank" rel="noopener">Tonton Francky</a>
+    <span data-i18n="foot.made_by">Made by</span>
+    <a class="by" href="https://tontonfrancky.com" target="_blank" rel="noopener">Tonton Francky</a>
   </div>
 
 </div>
 
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="i18n.js"></script>
 <script src="data.js"></script>
 <script src="supa.js"></script>
 <script>
 const $ = (s, r) => (r || document).querySelector(s);
+const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
 const params = new URLSearchParams(location.search);
 const slug = params.get('slug');
 const game = slug ? findGameBySlug(slug) : null;
 const content = $('#content');
+
+function refreshLangToggle() {
+  $$('.lang-pill').forEach(el => el.classList.toggle('active', el.dataset.lang === getLang()));
+}
 
 function render() {
   if (!game) {
@@ -48,21 +59,21 @@ function render() {
       <section class="detail">
         <div class="detail-photos empty-pane">
           <div class="icon">🎲</div>
-          <h3>Game not found</h3>
-          <p>That game isn't in the shelf.</p>
-          <a class="btn primary" href="index.html">← Back to all games</a>
+          <h3>${t('detail.not_found')}</h3>
+          <p>${t('detail.not_found_sub')}</p>
+          <a class="btn primary" href="index.html">${t('detail.back')}</a>
         </div>
       </section>`;
     return;
   }
 
-  document.getElementById('page-title').textContent = game.name + " — Paul's Board Games";
+  document.getElementById('page-title').textContent = game.name + " — " + t('brand');
   const tier = tierOf(game.rating);
   const photos = imagesForGame(slug);
   const tags = [];
-  if (game.rating === 20) tags.push('<span class="tag gold">★ PERFECT SCORE</span>');
+  if (game.rating === 20) tags.push(`<span class="tag gold">${t('tag.perfect')}</span>`);
   if (game.remarks && /3j|4j/i.test(game.remarks)) tags.push(`<span class="tag players">${game.remarks.toUpperCase()}</span>`);
-  if (isDuo(game)) tags.push('<span class="tag duo">2-PLAYER</span>');
+  if (isDuo(game)) tags.push(`<span class="tag duo">${t('tag.2player')}</span>`);
   if (game.remarks && !/3j|4j/i.test(game.remarks)) tags.push(`<span class="tag">${game.remarks}</span>`);
 
   const scoreHTML = game.rating == null
@@ -80,12 +91,16 @@ function render() {
       </div>`
     : `<div class="detail-photos empty-pane">
         <div class="icon">📷</div>
-        <h3>No photo yet!</h3>
-        <p>Tag a photo for ${game.name} in the photo studio.</p>
-        <a class="btn primary" href="tag.html?game=${slug}">Go tag a photo →</a>
+        <h3>${t('detail.no_photo.title')}</h3>
+        <p>${t('detail.no_photo.body', { name: game.name })}</p>
+        <a class="btn primary" href="tag.html?game=${slug}">${t('detail.no_photo.cta')}</a>
       </div>`;
 
-  // Suggest a couple of related games (same tier, not this one)
+  const description = descriptionFor(game.name, getLang());
+  const descriptionBlock = description
+    ? `<p class="game-description">${description}</p>`
+    : `<p class="game-description empty">${t('detail.description.empty')}</p>`;
+
   const related = GAMES.filter(g => tierOf(g.rating) === tier && g.name !== game.name)
     .sort(() => Math.random() - 0.5)
     .slice(0, 4);
@@ -94,14 +109,15 @@ function render() {
     <section class="detail">
       ${photoSection}
       <aside class="detail-info">
-        <div class="kicker">Game ${GAMES.indexOf(game) + 1} of ${GAMES.length}</div>
+        <div class="kicker">${t('detail.kicker', { n: GAMES.indexOf(game) + 1, total: GAMES.length })}</div>
         <h1>${game.name}</h1>
+        ${descriptionBlock}
         <div class="detail-score">${scoreHTML}</div>
         <div class="big-stars">${stars(game.rating)}</div>
         ${tags.length ? `<div class="tag-row">${tags.join('')}</div>` : ''}
         <div class="actions">
-          <a class="btn" href="index.html">← All games</a>
-          <a class="btn primary" href="tag.html?game=${slug}">📷 ${photos.length ? 'Manage photos' : 'Add photo'}</a>
+          <a class="btn" href="index.html">${t('detail.all_games')}</a>
+          <a class="btn primary" href="tag.html?game=${slug}">${photos.length ? t('detail.manage_photos') : t('detail.add_photo')}</a>
         </div>
       </aside>
     </section>
@@ -110,62 +126,62 @@ function render() {
       <div class="panel rating-panel" id="rating-panel">
         <div class="panel-tape"></div>
         <div class="avg-display" id="avg-display">
-          <div class="avg-big" id="avg-big">—</div>
+          <div class="avg-big" id="avg-big" data-empty="true">—</div>
           <div class="avg-stars-mini" id="avg-mini">
             <span class="stars-bg">★★★★★</span>
             <span class="stars-fill" id="avg-fill" style="width: 0%">★★★★★</span>
           </div>
-          <div class="avg-count" id="avg-count">No ratings yet — be the first!</div>
+          <div class="avg-count" id="avg-count">${t('rating.empty')}</div>
         </div>
 
-        <div class="rating-divider"><span>your turn</span></div>
+        <div class="rating-divider"><span>${t('rating.your_turn')}</span></div>
 
         <label class="name-row">
           <span class="avatar" id="name-avatar" data-empty="true">?</span>
-          <input class="name-input bare" id="visitor-name" type="text" placeholder="Your name" maxlength="40" autocomplete="name" />
+          <input class="name-input bare" id="visitor-name" type="text" placeholder="${t('rating.your_name')}" maxlength="40" autocomplete="name" />
         </label>
 
-        <div class="star-pick" id="star-pick" role="radiogroup" aria-label="Rate this game from 1 to 5 stars">
+        <div class="star-pick" id="star-pick" role="radiogroup">
           <button type="button" data-value="1" aria-label="1 star">★</button>
           <button type="button" data-value="2" aria-label="2 stars">★</button>
           <button type="button" data-value="3" aria-label="3 stars">★</button>
           <button type="button" data-value="4" aria-label="4 stars">★</button>
           <button type="button" data-value="5" aria-label="5 stars">★</button>
         </div>
-        <div class="star-label" id="star-label">Pick a name first ↑</div>
+        <div class="star-label" id="star-label">${t('rating.pick_name_first')}</div>
         <div class="rating-status" id="rating-status"></div>
       </div>
 
       <div class="panel comments-panel" id="comments-panel">
         <div class="panel-tape pink"></div>
         <div class="comments-head">
-          <h2>What people say</h2>
+          <h2>${t('comments.heading')}</h2>
           <span class="comment-count" id="comment-count">0</span>
         </div>
         <form class="comment-form" id="comment-form">
-          <textarea id="comment-body" placeholder="Tell everyone what you think about ${game.name}…" maxlength="2000"></textarea>
+          <textarea id="comment-body" placeholder="${t('comments.placeholder', { name: game.name })}" maxlength="2000"></textarea>
           <div class="send-row">
             <span class="rating-status" id="comment-status"></span>
-            <button class="btn primary big" type="submit" id="comment-submit">✦ Post comment</button>
+            <button class="btn primary big" type="submit" id="comment-submit">${t('comments.post')}</button>
           </div>
         </form>
         <div class="comment-list" id="comment-list">
-          <div class="empty-comments"><span class="icon">💬</span><div>Loading…</div></div>
+          <div class="empty-comments"><span class="icon">💬</span><div>${t('comments.loading')}</div></div>
         </div>
       </div>
     </section>
 
     ${related.length ? `
     <section class="shelf">
-      <div class="shelf-head"><h2>You might also like…</h2></div>
+      <div class="shelf-head"><h2>${t('detail.related')}</h2></div>
       <div class="sticker-grid">
         ${related.map(g => {
-          const t = tierOf(g.rating);
+          const t2 = tierOf(g.rating);
           const p = imagesForGame(slugify(g.name));
           const photo = p.length
             ? `<img class="photo" src="images/thumb/${p[0]}" alt="${g.name}" loading="lazy" />`
             : `<div class="photo-placeholder">${g.name.charAt(0).toUpperCase()}</div>`;
-          return `<a class="game" data-tier="${t}" href="game.html?slug=${slugify(g.name)}">
+          return `<a class="game" data-tier="${t2}" href="game.html?slug=${slugify(g.name)}">
             ${photo}
             <div class="body">
               <div class="name">${g.name}</div>
@@ -181,13 +197,22 @@ function render() {
   `;
 }
 
-render();
-
-// — Community: ratings + comments —
-if (game) {
-  initRating();
-  initComments();
+function rerenderAll() {
+  applyI18n();
+  refreshLangToggle();
+  render();
+  if (game) {
+    initRating();
+    initComments();
+  }
 }
+
+document.getElementById('lang-toggle').addEventListener('click', () => {
+  setLang(getLang() === 'fr' ? 'en' : 'fr');
+  rerenderAll();
+});
+
+rerenderAll();
 
 function initRating() {
   const nameInput = $('#visitor-name');
@@ -213,21 +238,19 @@ function initRating() {
     const fill = $('#avg-fill');
     const count = $('#avg-count');
     if (avg == null) {
-      big.textContent = '—';
-      big.dataset.empty = 'true';
+      big.textContent = '—'; big.dataset.empty = 'true';
       fill.style.width = '0%';
-      count.textContent = 'No ratings yet — be the first!';
+      count.textContent = t('rating.empty');
     } else {
-      big.textContent = avg.toFixed(1);
-      big.dataset.empty = 'false';
+      big.textContent = avg.toFixed(1); big.dataset.empty = 'false';
       fill.style.width = (avg / 5 * 100) + '%';
       const n = currentRatings.length;
-      count.textContent = n + ' rating' + (n === 1 ? '' : 's');
+      count.textContent = t(n === 1 ? 'rating.count_one' : 'rating.count_many', { n });
     }
   }
 
   function avatarStyleFor(name) {
-    if (!name) return { initial: '?', hue: 0 };
+    if (!name) return { initial: '?', bg: '', fg: '' };
     let h = 0;
     for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) & 0x7fffffff;
     const palette = [
@@ -246,27 +269,23 @@ function initRating() {
     const av = $('#name-avatar');
     const name = nameInput.value.trim();
     if (!name) {
-      av.textContent = '?';
-      av.dataset.empty = 'true';
-      av.style.background = '';
-      av.style.color = '';
+      av.textContent = '?'; av.dataset.empty = 'true';
+      av.style.background = ''; av.style.color = '';
     } else {
       const s = avatarStyleFor(name);
-      av.textContent = s.initial;
-      av.dataset.empty = 'false';
-      av.style.background = s.bg;
-      av.style.color = s.fg;
+      av.textContent = s.initial; av.dataset.empty = 'false';
+      av.style.background = s.bg; av.style.color = s.fg;
     }
   }
 
   function refreshMine() {
     const name = nameInput.value.trim();
     refreshAvatar();
-    if (!name) { paintStars(0, 0); label.textContent = 'Pick a name first ↑'; pendingValue = 0; return; }
+    if (!name) { paintStars(0, 0); label.textContent = t('rating.pick_name_first'); pendingValue = 0; return; }
     const mine = currentRatings.find(r => r.name.toLowerCase() === name.toLowerCase());
     pendingValue = mine ? mine.stars : 0;
     paintStars(pendingValue, 0);
-    label.textContent = mine ? `${mine.stars}/5 ★ — tap to change` : 'Tap a star to rate';
+    label.textContent = mine ? t('rating.your_rating', { n: mine.stars }) : t('rating.tap_to_rate');
   }
 
   async function load() {
@@ -274,7 +293,7 @@ function initRating() {
       currentRatings = await fetchRatings(slug);
       refreshAvg();
       refreshMine();
-    } catch (e) { status.textContent = 'Could not load ratings'; status.className = 'rating-status error'; }
+    } catch (e) { status.textContent = t('comments.failed_load'); status.className = 'rating-status error'; }
   }
 
   starBtns.forEach((b, i) => {
@@ -283,25 +302,23 @@ function initRating() {
     b.addEventListener('focus', () => { if (nameInput.value.trim()) paintStars(pendingValue, v); });
     b.addEventListener('click', async () => {
       const name = nameInput.value.trim();
-      if (!name) { nameInput.focus(); status.textContent = 'Add your name above first ↑'; status.className = 'rating-status error'; return; }
+      if (!name) { nameInput.focus(); status.textContent = t('rating.name_first_status'); status.className = 'rating-status error'; return; }
       setVisitorName(name);
-      // pop animation
       b.classList.remove('just-picked'); void b.offsetWidth; b.classList.add('just-picked');
       try {
-        status.textContent = 'Saving…'; status.className = 'rating-status';
+        status.textContent = t('rating.saving'); status.className = 'rating-status';
         await upsertRating(slug, name, v);
         pendingValue = v;
-        // Update locally without refetch
         const idx = currentRatings.findIndex(r => r.name.toLowerCase() === name.toLowerCase());
         if (idx >= 0) currentRatings[idx].stars = v;
         else currentRatings.push({ name, stars: v });
         refreshAvg();
         paintStars(v, 0);
-        label.textContent = `Your rating: ${v}/5`;
-        status.textContent = '★ Saved!'; status.className = 'rating-status success';
+        label.textContent = t('rating.your_rating', { n: v });
+        status.textContent = t('rating.saved'); status.className = 'rating-status success';
         setTimeout(() => { status.textContent = ''; status.className = 'rating-status'; }, 2000);
       } catch (e) {
-        status.textContent = e.message && /relation .* does not exist/i.test(e.message) ? 'Database not set up yet (run the migration).' : 'Save failed: ' + (e.message || 'unknown');
+        status.textContent = e.message && /relation .* does not exist|schema cache/i.test(e.message) ? t('rating.db_missing') : t('rating.save_failed', { msg: e.message || '?' });
         status.className = 'rating-status error';
       }
     });
@@ -323,7 +340,6 @@ function initComments() {
   function escapeHTML(s) {
     return s.replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
   }
-
   function colorFor(name) {
     let h = 0;
     for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) & 0x7fffffff;
@@ -341,7 +357,7 @@ function initComments() {
   function render(comments) {
     $('#comment-count').textContent = comments.length;
     if (!comments.length) {
-      list.innerHTML = '<div class="empty-comments"><span class="icon">💬</span><div>No comments yet — be the first!</div></div>';
+      list.innerHTML = `<div class="empty-comments"><span class="icon">💬</span><div>${t('comments.empty')}</div></div>`;
       return;
     }
     list.innerHTML = comments.map(c => {
@@ -366,7 +382,7 @@ function initComments() {
       const data = await fetchComments(slug);
       render(data);
     } catch (e) {
-      list.innerHTML = '<div class="empty-comments">Could not load comments.</div>';
+      list.innerHTML = `<div class="empty-comments">${t('comments.failed_load')}</div>`;
     }
   }
 
@@ -374,19 +390,19 @@ function initComments() {
     e.preventDefault();
     const name = ($('#visitor-name').value || '').trim();
     const text = body.value.trim();
-    if (!name) { status.textContent = 'Pick a name above first'; status.className = 'rating-status error'; return; }
-    if (!text) { status.textContent = 'Write something to post'; status.className = 'rating-status error'; return; }
+    if (!name) { status.textContent = t('comments.need_name'); status.className = 'rating-status error'; return; }
+    if (!text) { status.textContent = t('comments.need_text'); status.className = 'rating-status error'; return; }
     setVisitorName(name);
-    submit.disabled = true; status.textContent = 'Posting…'; status.className = 'rating-status';
+    submit.disabled = true; status.textContent = t('comments.posting'); status.className = 'rating-status';
     try {
-      const created = await addComment(slug, name, text);
+      await addComment(slug, name, text);
       body.value = '';
-      status.textContent = '✓ Posted!'; status.className = 'rating-status success';
+      status.textContent = t('comments.posted'); status.className = 'rating-status success';
       const fresh = await fetchComments(slug);
       render(fresh);
       setTimeout(() => { status.textContent = ''; status.className = 'rating-status'; }, 2000);
     } catch (err) {
-      status.textContent = err.message && /relation .* does not exist/i.test(err.message) ? 'Database not set up yet (run the migration).' : 'Failed: ' + (err.message || 'unknown');
+      status.textContent = err.message && /relation .* does not exist|schema cache/i.test(err.message) ? t('rating.db_missing') : t('comments.post_failed', { msg: err.message || '?' });
       status.className = 'rating-status error';
     } finally {
       submit.disabled = false;

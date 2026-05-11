@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="en">
+<html>
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Paul's Board Games — the collection</title>
+<title data-i18n="title.index">Paul's Board Games — the collection</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Fredoka:wght@400..700&family=Nunito:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
@@ -16,24 +16,27 @@
   <header class="topbar">
     <a href="index.html" class="mark">
       <span class="die">P</span>
-      Paul's Board Games
+      <span data-i18n="brand">Paul's Board Games</span>
     </a>
     <nav class="nav">
-      <a href="#collection">All games</a>
-      <a href="#chart">Scores</a>
-      <a href="tag.html">📷 Tag photos</a>
-      <a href="#" class="live">Playing!</a>
+      <a href="#collection" data-i18n="nav.all_games">All games</a>
+      <a href="#chart" data-i18n="nav.scores">Scores</a>
+      <a href="tag.html" data-i18n="nav.tag_photos">📷 Tag photos</a>
+      <button class="lang-toggle" id="lang-toggle" type="button" aria-label="Change language">
+        <span class="lang-pill" data-lang="fr">FR</span>
+        <span class="lang-pill" data-lang="en">EN</span>
+      </button>
     </nav>
   </header>
 
   <section class="hero">
     <div class="hero-card">
-      <p class="hello">★ Hello! Welcome to ★</p>
-      <h1 class="hero-title">Paul's <span class="pop">Board Games</span></h1>
-      <p class="hero-sub">A whole shelf full of board games — rated out of twenty. Click a game to see its photo!</p>
+      <p class="hello" data-i18n="hero.kicker">★ Hello! Welcome to ★</p>
+      <h1 class="hero-title"><span data-i18n="hero.title.before">Paul's</span> <span class="pop" data-i18n="hero.title.pop">Board Games</span></h1>
+      <p class="hero-sub" data-i18n="hero.sub">A whole shelf full of board games — rated out of twenty. Click a game to see its photo!</p>
       <div class="hero-actions">
-        <a class="btn primary" href="#collection">See all games →</a>
-        <button class="btn ghost" id="surprise-btn">🎲 Surprise me</button>
+        <a class="btn primary" href="#collection" data-i18n="hero.see_all">See all games →</a>
+        <button class="btn ghost" id="surprise-btn" data-i18n="hero.surprise">🎲 Surprise me</button>
       </div>
     </div>
 
@@ -42,14 +45,14 @@
         <div class="icon">★</div>
         <div>
           <div class="big" id="stat-count">140</div>
-          <div class="lbl">games on the shelf</div>
+          <div class="lbl" data-i18n="stat.games">games on the shelf</div>
         </div>
       </div>
       <div class="stat-card b">
         <div class="icon">📷</div>
         <div>
           <div class="big" id="stat-photos">0<span class="small">/165</span></div>
-          <div class="lbl">photos tagged</div>
+          <div class="lbl" data-i18n="stat.photos">photos tagged</div>
         </div>
       </div>
     </div>
@@ -57,8 +60,8 @@
 
   <section class="shelf">
     <div class="shelf-head">
-      <h2>Paul's favourites</h2>
-      <span class="pill">★ 20 / 20 ★</span>
+      <h2 data-i18n="shelf.favs">Paul's favourites</h2>
+      <span class="pill" data-i18n="shelf.perfect">★ 20 / 20 ★</span>
     </div>
     <div class="trophies" id="trophies"></div>
   </section>
@@ -66,36 +69,36 @@
   <section id="collection" class="filter-strip">
     <div class="field-search">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-      <input id="search" type="search" placeholder="Find a game…" autocomplete="off" />
+      <input id="search" type="search" data-i18n-placeholder="filter.search" placeholder="Find a game…" autocomplete="off" />
     </div>
     <div>
-      <span class="field-label">Score</span>
+      <span class="field-label" data-i18n="filter.score">Score</span>
       <div class="chips" id="tier-chips" style="display:inline-flex">
-        <button class="chip" aria-pressed="false" data-tier="excellent">Awesome (18+)</button>
-        <button class="chip" aria-pressed="false" data-tier="great">Great (16-17)</button>
-        <button class="chip" aria-pressed="false" data-tier="good">Good (14-15)</button>
-        <button class="chip" aria-pressed="false" data-tier="okay">Okay</button>
+        <button class="chip" aria-pressed="false" data-tier="excellent" data-i18n="filter.tier.excellent">Awesome (18+)</button>
+        <button class="chip" aria-pressed="false" data-tier="great" data-i18n="filter.tier.great">Great (16-17)</button>
+        <button class="chip" aria-pressed="false" data-tier="good" data-i18n="filter.tier.good">Good (14-15)</button>
+        <button class="chip" aria-pressed="false" data-tier="okay" data-i18n="filter.tier.okay">Okay</button>
       </div>
     </div>
     <div>
-      <span class="field-label">Players</span>
+      <span class="field-label" data-i18n="filter.players">Players</span>
       <div class="chips" id="player-chips" style="display:inline-flex">
-        <button class="chip" aria-pressed="false" data-players="3j+">3 or more</button>
-        <button class="chip" aria-pressed="false" data-players="duo">2 player</button>
-        <button class="chip" aria-pressed="false" data-players="hasphoto">Has photo</button>
+        <button class="chip" aria-pressed="false" data-players="3j+" data-i18n="filter.players.3plus">3 or more</button>
+        <button class="chip" aria-pressed="false" data-players="duo" data-i18n="filter.players.2">2 player</button>
+        <button class="chip" aria-pressed="false" data-players="hasphoto" data-i18n="filter.players.hasphoto">Has photo</button>
       </div>
     </div>
   </section>
 
   <div class="ribbon">
-    <span class="count"><em id="visible-count">140</em> / <span id="total-count">140</span> games</span>
+    <span class="count"><em id="visible-count">140</em> / <span id="total-count">140</span> <span data-i18n="ribbon.games_count">games</span></span>
     <div class="sort">
-      <span class="field-label">Sort</span>
+      <span class="field-label" data-i18n="ribbon.sort">Sort</span>
       <select id="sort">
-        <option value="rating-desc">Best first</option>
-        <option value="rating-asc">Worst first</option>
-        <option value="alpha">A → Z</option>
-        <option value="random">Shuffle</option>
+        <option value="rating-desc" data-i18n="sort.best">Best first</option>
+        <option value="rating-asc" data-i18n="sort.worst">Worst first</option>
+        <option value="alpha" data-i18n="sort.alpha">A → Z</option>
+        <option value="random" data-i18n="sort.shuffle">Shuffle</option>
       </select>
     </div>
   </div>
@@ -104,18 +107,20 @@
 
   <section id="chart" class="chart-section">
     <div>
-      <h2>The score chart</h2>
-      <p>Most games land in the <strong>15–17</strong> sweet spot. Only three got the perfect <strong>20/20</strong>!</p>
+      <h2><span data-i18n="chart.title">The score</span><br/><em data-i18n="chart.title.line2">chart.</em></h2>
+      <p id="chart-body"></p>
     </div>
     <div class="bars" id="bars"></div>
   </section>
 
   <div class="foot">
-    Made by <a class="by" href="https://tontonfrancky.com" target="_blank" rel="noopener">Tonton Francky</a>
+    <span data-i18n="foot.made_by">Made by</span>
+    <a class="by" href="https://tontonfrancky.com" target="_blank" rel="noopener">Tonton Francky</a>
   </div>
 
 </div>
 
+<script src="i18n.js"></script>
 <script src="data.js"></script>
 <script>
 const $ = (s, r) => (r || document).querySelector(s);
@@ -138,7 +143,7 @@ function renderTrophies() {
       <div class="stars">★★★★★</div>
       <h3>${g.name}</h3>
       ${photoTag}
-      <div class="tag-row"><span class="tag gold">★ PERFECT</span></div>
+      <div class="tag-row"><span class="tag gold">${t('tag.perfect')}</span></div>
     </a>`;
   }).join('');
 }
@@ -153,11 +158,12 @@ function renderChart() {
     const h = max ? (v / max * 100) : 0;
     const isPeak = +k === peak;
     const cls = v === 0 ? 'zero' : (isPeak ? 'peak' : '');
-    return `<div class="bar ${cls}" style="height:${h || 3}%; --i:${i};" title="${k}/20 — ${v} game${v>1?'s':''}">
+    return `<div class="bar ${cls}" style="height:${h || 3}%; --i:${i};" title="${k}/20">
       <span class="bar-count">${v}</span>
       <span class="bar-label">${k}</span>
     </div>`;
   }).join('');
+  $('#chart-body').innerHTML = t('chart.body', { a: '<strong>15</strong>', b: '<strong>17</strong>', c: '<strong>20/20</strong>' });
 }
 
 function visibleList() {
@@ -192,7 +198,7 @@ function renderGrid() {
   const list = sortGames(visibleList());
   const grid = $('#grid');
   if (!list.length) {
-    grid.innerHTML = '<div class="empty-state">Hmm, no games match!<span>Try removing a filter</span></div>';
+    grid.innerHTML = `<div class="empty-state">${t('empty.title')}<span>${t('empty.hint')}</span></div>`;
   } else {
     grid.innerHTML = list.map((g, i) => {
       const tier = tierOf(g.rating);
@@ -203,9 +209,9 @@ function renderGrid() {
         : `<div class="photo-placeholder">${g.name.charAt(0).toUpperCase()}</div>`;
       const score = g.rating == null ? '—' : `${g.rating}<span class="denom">/20</span>`;
       const tags = [];
-      if (g.rating === 20) tags.push('<span class="tag gold">★ PERFECT</span>');
+      if (g.rating === 20) tags.push(`<span class="tag gold">${t('tag.perfect')}</span>`);
       if (g.remarks && /3j|4j/i.test(g.remarks)) tags.push(`<span class="tag players">${g.remarks.toUpperCase()}</span>`);
-      if (isDuo(g)) tags.push('<span class="tag duo">2-PLAYER</span>');
+      if (isDuo(g)) tags.push(`<span class="tag duo">${t('tag.2player')}</span>`);
       if (photos.length > 1) tags.push(`<span class="tag photo-count">📷 ${photos.length}</span>`);
       return `<a class="game" data-tier="${tier}" href="game.html?slug=${slug}" style="animation: barIn .35s cubic-bezier(.34,1.56,.64,1) ${Math.min(i*15, 700)}ms backwards;">
         ${photo}
@@ -224,11 +230,24 @@ function renderGrid() {
   $('#total-count').textContent = GAMES.length;
 }
 
+function refreshLangToggle() {
+  $$('.lang-pill').forEach(el => el.classList.toggle('active', el.dataset.lang === getLang()));
+}
+
+function rerenderAll() {
+  applyI18n();
+  document.title = t('title.index');
+  refreshLangToggle();
+  renderTrophies();
+  renderChart();
+  renderGrid();
+}
+
 function bind() {
-  let t;
+  let t1;
   $('#search').addEventListener('input', e => {
-    clearTimeout(t);
-    t = setTimeout(() => { state.q = e.target.value; renderGrid(); }, 120);
+    clearTimeout(t1);
+    t1 = setTimeout(() => { state.q = e.target.value; renderGrid(); }, 120);
   });
   $$('#tier-chips .chip').forEach(b => b.addEventListener('click', () => {
     const tier = b.dataset.tier;
@@ -248,6 +267,10 @@ function bind() {
     const pick = rated[Math.floor(Math.random() * rated.length)];
     location.href = 'game.html?slug=' + slugify(pick.name);
   });
+  $('#lang-toggle').addEventListener('click', () => {
+    setLang(getLang() === 'fr' ? 'en' : 'fr');
+    rerenderAll();
+  });
 
   const counter = $('#stat-count');
   const target = parseInt(counter.textContent, 10);
@@ -262,9 +285,7 @@ function bind() {
 }
 
 computeStats();
-renderTrophies();
-renderChart();
-renderGrid();
+rerenderAll();
 bind();
 </script>
 </body>

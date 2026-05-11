@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="en">
+<html>
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Tag photos — Paul's Board Games</title>
+<title data-i18n="title.tag">Tag photos — Paul's Board Games</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Fredoka:wght@400..700&family=Nunito:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
@@ -16,33 +16,37 @@
   <header class="topbar">
     <a href="index.html" class="mark">
       <span class="die">P</span>
-      Paul's Board Games
+      <span data-i18n="brand">Paul's Board Games</span>
     </a>
     <nav class="nav">
-      <a href="index.html">All games</a>
-      <a href="#" class="live">Tagging</a>
+      <a href="index.html" data-i18n="nav.all_games">All games</a>
+      <a href="#" class="live" data-i18n="nav.tagging">Tagging</a>
+      <button class="lang-toggle" id="lang-toggle" type="button" aria-label="Change language">
+        <span class="lang-pill" data-lang="fr">FR</span>
+        <span class="lang-pill" data-lang="en">EN</span>
+      </button>
     </nav>
   </header>
 
   <section class="hero" style="margin-bottom: 1.5rem">
     <div class="hero-card" style="background: var(--green);">
-      <p class="hello">★ Photo studio ★</p>
-      <h1 class="hero-title">Tag <span class="pop">photos</span></h1>
-      <p class="hero-sub">Click a photo, pick the game it shows. Your tags are saved automatically.</p>
+      <p class="hello" data-i18n="tag.hero.kicker">★ Photo studio ★</p>
+      <h1 class="hero-title"><span data-i18n="tag.hero.title.before">Tag</span> <span class="pop" data-i18n="tag.hero.title.pop">photos</span></h1>
+      <p class="hero-sub" data-i18n="tag.hero.sub">Click a photo, pick the game it shows.</p>
     </div>
     <div class="stat-stack">
       <div class="stat-card a">
         <div class="icon">📷</div>
         <div>
           <div class="big" id="stat-tagged">0<span class="small">/0</span></div>
-          <div class="lbl">photos tagged</div>
+          <div class="lbl" data-i18n="stat.photos">photos tagged</div>
         </div>
       </div>
       <div class="stat-card b">
         <div class="icon" style="background: var(--yellow); color: var(--ink);">★</div>
         <div>
           <div class="big" id="stat-untagged">0</div>
-          <div class="lbl">left to tag</div>
+          <div class="lbl" data-i18n="stat.left">left to tag</div>
         </div>
       </div>
     </div>
@@ -54,15 +58,15 @@
       <span class="bar"><i id="progress-bar" style="width: 0%"></i></span>
     </div>
     <div class="chips">
-      <button class="chip" aria-pressed="true" data-filter="all">All</button>
-      <button class="chip" aria-pressed="false" data-filter="untagged">Untagged</button>
-      <button class="chip" aria-pressed="false" data-filter="tagged">Tagged</button>
+      <button class="chip" aria-pressed="true" data-filter="all" data-i18n="tag.filter.all">All</button>
+      <button class="chip" aria-pressed="false" data-filter="untagged" data-i18n="tag.filter.untagged">Untagged</button>
+      <button class="chip" aria-pressed="false" data-filter="tagged" data-i18n="tag.filter.tagged">Tagged</button>
     </div>
     <div style="margin-left: auto; display: flex; gap: 0.4rem; flex-wrap: wrap;">
-      <button class="btn" id="export-btn">⬇ Export tags</button>
-      <button class="btn" id="import-btn">⬆ Import tags</button>
+      <button class="btn" id="export-btn" data-i18n="tag.export">⬇ Export tags</button>
+      <button class="btn" id="import-btn" data-i18n="tag.import">⬆ Import tags</button>
       <input type="file" id="import-file" accept="application/json" style="display:none" />
-      <button class="btn danger" id="reset-btn">↺ Restore auto-tags</button>
+      <button class="btn danger" id="reset-btn" data-i18n="tag.reset">↺ Restore auto-tags</button>
     </div>
   </div>
 
@@ -73,40 +77,41 @@
       <div class="preview empty" id="preview">
         <div>
           <div style="font-size: 2rem">👈</div>
-          <div>Click a photo to start tagging</div>
+          <div data-i18n="tag.click_prompt">Click a photo to start tagging</div>
         </div>
       </div>
-      <h3 id="selected-filename" style="color: var(--ink-3); font-family: 'Fredoka', sans-serif; font-weight: 600; font-size: 0.85rem; letter-spacing: 0.05em;">No photo selected</h3>
+      <h3 id="selected-filename" data-i18n="tag.no_selection" style="color: var(--ink-3); font-family: 'Fredoka', sans-serif; font-weight: 600; font-size: 0.85rem; letter-spacing: 0.05em;">No photo selected</h3>
       <div id="current-game" class="current empty">
-        <span>No game assigned</span>
-        <button class="btn danger" id="unassign-btn" style="padding: 0.25rem 0.6rem; font-size: 0.75rem;">Remove</button>
+        <span data-i18n="tag.no_game">No game assigned</span>
+        <button class="btn danger" id="unassign-btn" data-i18n="tag.remove" style="padding: 0.25rem 0.6rem; font-size: 0.75rem;">Remove</button>
       </div>
-      <input type="search" class="game-select" id="game-search" placeholder="Search a game…" autocomplete="off" />
+      <input type="search" class="game-select" id="game-search" data-i18n-placeholder="tag.search_game" placeholder="Search a game…" autocomplete="off" />
       <div class="game-list" id="game-list"></div>
     </aside>
   </div>
 
   <div class="foot">
-    Made by <a class="by" href="https://tontonfrancky.com" target="_blank" rel="noopener">Tonton Francky</a>
+    <span data-i18n="foot.made_by">Made by</span>
+    <a class="by" href="https://tontonfrancky.com" target="_blank" rel="noopener">Tonton Francky</a>
   </div>
 </div>
 
+<script src="i18n.js"></script>
 <script src="data.js"></script>
 <script>
 const $ = (s, r) => (r || document).querySelector(s);
 const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
 
-const state = {
-  filter: 'all',
-  selected: null,  // filename
-  search: ''
-};
+const state = { filter: 'all', selected: null, search: '' };
 
-// If ?game= is in URL, scroll to it and pre-fill search
 const params = new URLSearchParams(location.search);
 if (params.get('game')) {
   const g = findGameBySlug(params.get('game'));
   if (g) state.search = g.name;
+}
+
+function refreshLangToggle() {
+  $$('.lang-pill').forEach(el => el.classList.toggle('active', el.dataset.lang === getLang()));
 }
 
 function refreshStats() {
@@ -126,7 +131,7 @@ function renderGrid() {
     return true;
   });
   if (!filtered.length) {
-    grid.innerHTML = '<div class="empty-state" style="grid-column: 1 / -1;">Nothing here!<span>Try changing the filter</span></div>';
+    grid.innerHTML = `<div class="empty-state" style="grid-column: 1 / -1;">${t('tag.empty.title')}<span>${t('tag.empty.hint')}</span></div>`;
     return;
   }
   grid.innerHTML = filtered.map(f => {
@@ -135,7 +140,7 @@ function renderGrid() {
     const cls = (slug ? 'tagged' : 'untagged') + (state.selected === f ? ' selected' : '');
     return `<div class="thumb ${cls}" data-file="${f}">
       <img src="images/thumb/${f}" alt="${f}" loading="lazy" />
-      <div class="badge">${g ? g.name : 'Untagged'}</div>
+      <div class="badge">${g ? g.name : t('tag.untagged_label')}</div>
     </div>`;
   }).join('');
 
@@ -152,10 +157,10 @@ function renderSide() {
   const current = $('#current-game');
   if (!state.selected) {
     preview.classList.add('empty');
-    preview.innerHTML = '<div><div style="font-size: 2rem">👈</div><div>Click a photo to start tagging</div></div>';
-    filenameEl.textContent = 'No photo selected';
+    preview.innerHTML = `<div><div style="font-size: 2rem">👈</div><div>${t('tag.click_prompt')}</div></div>`;
+    filenameEl.textContent = t('tag.no_selection');
     current.classList.add('empty');
-    current.querySelector('span').textContent = 'No game assigned';
+    current.querySelector('span').textContent = t('tag.no_game');
     return;
   }
   preview.classList.remove('empty');
@@ -168,7 +173,7 @@ function renderSide() {
     current.querySelector('span').textContent = '✅ ' + g.name;
   } else {
     current.classList.add('empty');
-    current.querySelector('span').textContent = 'No game assigned';
+    current.querySelector('span').textContent = t('tag.no_game');
   }
 }
 
@@ -193,6 +198,16 @@ function renderGameList() {
     renderGrid();
     renderSide();
   }));
+}
+
+function rerenderAll() {
+  applyI18n();
+  document.title = t('title.tag');
+  refreshLangToggle();
+  refreshStats();
+  renderGrid();
+  renderSide();
+  renderGameList();
 }
 
 function bind() {
@@ -232,21 +247,23 @@ function bind() {
       const data = JSON.parse(text);
       saveMapping(data);
       refreshStats(); renderGrid(); renderSide(); renderGameList();
-    } catch (err) { alert('Could not import: ' + err.message); }
+    } catch (err) { alert(t('tag.import_failed', { msg: err.message })); }
   });
 
   $('#reset-btn').addEventListener('click', () => {
-    if (confirm('Discard your changes and restore the auto-tagged defaults?')) {
+    if (confirm(t('tag.reset_confirm'))) {
       localStorage.removeItem(MAPPING_KEY);
       refreshStats(); renderGrid(); renderSide(); renderGameList();
     }
   });
+
+  $('#lang-toggle').addEventListener('click', () => {
+    setLang(getLang() === 'fr' ? 'en' : 'fr');
+    rerenderAll();
+  });
 }
 
-refreshStats();
-renderGrid();
-renderSide();
-renderGameList();
+rerenderAll();
 bind();
 </script>
 </body>
