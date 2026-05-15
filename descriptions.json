@@ -362,5 +362,9 @@
   "Silver & Gold": {
     "fr": "Cochez des cases sur des cartes trésor pour compléter vos îles le plus vite possible. Un petit jeu de type flip-and-write très rapide et fun.",
     "en": "Flip a card, grab a marker, and check off shapes on your treasure maps. A breezy flip-and-fill game that's quick to learn and fun for everyone."
+  },
+  "Pitchout": {
+    "fr": "Un jeu d'adresse en équipes : les Citoyens affrontent les Hoods en faisant glisser leurs pions sur le plateau pour écraser l'adversaire. Tactique, nerveux et un peu chaotique.",
+    "en": "A team-based dexterity game where you flick your pieces across the board to crush rival squads. Tactical, snappy, and a little chaotic."
   }
 }

@@ -89,12 +89,12 @@ function render() {
 
   const photoSection = photos.length
     ? `<div class="detail-photos">
-        ${photos.map(f => `
-          <figure class="detail-photo">
-            <span class="pin"></span>
-            <img src="images/full/${f}" alt="${game.name}" loading="lazy" />
-          </figure>
-        `).join('')}
+        ${photos.map(f => {
+          const media = /\.(mp4|webm)$/i.test(f)
+            ? `<video src="images/full/${f}" poster="images/full/${f}.poster.jpg" autoplay muted loop playsinline controls preload="metadata"></video>`
+            : `<img src="images/full/${f}" alt="${game.name}" loading="lazy" />`;
+          return `<figure class="detail-photo"><span class="pin"></span>${media}</figure>`;
+        }).join('')}
       </div>`
     : `<div class="detail-photos empty-pane">
         <div class="icon">📷</div>

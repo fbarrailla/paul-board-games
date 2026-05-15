@@ -247,7 +247,7 @@ a.foot-by:hover, .foot a.by:hover { transform: rotate(2deg) translate(-1px,-1px)
 .detail-photo { position: relative; border: 3px solid var(--ink); border-radius: 22px; overflow: hidden; box-shadow: 6px 6px 0 var(--ink); background: var(--cream-2); }
 .detail-photo:nth-child(odd) { transform: rotate(-0.6deg); }
 .detail-photo:nth-child(even) { transform: rotate(0.4deg); }
-.detail-photo img { width: 100%; display: block; max-height: 70vh; object-fit: cover; }
+.detail-photo img, .detail-photo video { width: 100%; display: block; max-height: 70vh; object-fit: cover; }
 .detail-photo .pin { position: absolute; top: -10px; left: 20px; width: 22px; height: 22px; background: var(--red); border: 2px solid var(--ink); border-radius: 50%; box-shadow: 2px 2px 0 var(--ink); }
 .detail-photos.empty-pane { background: var(--paper); border: 3px dashed var(--ink); border-radius: 22px; padding: 3rem 2rem; text-align: center; box-shadow: none; }
 .detail-photos.empty-pane .icon { font-size: 3rem; }
