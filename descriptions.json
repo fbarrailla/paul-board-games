@@ -366,5 +366,9 @@
   "Pitchout": {
     "fr": "Un jeu d'adresse en équipes : les Citoyens affrontent les Hoods en faisant glisser leurs pions sur le plateau pour écraser l'adversaire. Tactique, nerveux et un peu chaotique.",
     "en": "A team-based dexterity game where you flick your pieces across the board to crush rival squads. Tactical, snappy, and a little chaotic."
+  },
+  "Duplik": {
+    "fr": "Un jeu de dessin loufoque : un maître du jeu décrit une scène et tout le monde doit la dessiner sans la voir. Fous rires assurés quand on compare les œuvres !",
+    "en": "A wild party drawing game where one player describes a scene and everyone else tries to sketch it blind. Comparing the results is where the giggles really start!"
   }
 }
